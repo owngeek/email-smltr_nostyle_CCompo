@@ -1,142 +1,112 @@
-import React, { useState } from "react"
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import 'typeface-roboto';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import SendIcon from '@material-ui/icons/Send';
-import CircularProgress from '@material-ui/core/CircularProgress'
+import React, { Component } from 'react'
+let currentStyle=null
+const demoStyle = {borderColor:"red"}   
+export default class FormComponent extends Component {
 
-import DeleteIcon from '@material-ui/icons/Delete';
-
-const CssTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: 'green',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: 'grey',
-    },
-    '& .MuiInput-underline.Mui-error:after': {
-      borderBottomColor: 'red',
-    },
-    '& .MuiInput-underline.Mui-focused:after': {
-      borderBottomColor: 'green',
-    },
-  },
-})(TextField);
-
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-      width: 200,
-    },
-
-
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(1),
-      width: theme.spacing(16),
-      height: theme.spacing(16),
-    },
-
-
-  },
-}));
-
-
-function FormComponent() {
-
-  const [values, setValues] = useState({ email: "", subject: "", message: "" })
-  const [errors,setErrors] = useState({email:false,subject:false,message:false})
-  const [stage,setStage]=useState("")
-
-  const handleChange = (e) => {
-    setValues({
-      ...values,
-      [e.target.name]: e.target.value
-    })
+constructor(){
+  super()
+  this.state={
+    valueEmail:"",
+    valueSubject:"",
+    valueMessage:"",
+    errorEmail:currentStyle,
+    errorSubject:currentStyle,
+    errorMessage:currentStyle,
   }
+ 
+}
 
-  const handleBlur = (e) => {
-    console.log('onBlur',e.target.name)
-  }
+ 
 
-  const sendButtonStatus = () =>{
+render(){
+const handleChange1 =(e)=>{this.setState({valueEmail:e.target.value,})}
+const handleChange2 =(e)=>{this.setState({valueSubject:e.target.value,})}
+const handleChange3 =(e)=>{this.setState({valueMessage:e.target.value})}
 
-    console.log('Is Valid',!validateEmail(values.email));
+const validateEmail = (email) => {
+  const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return regexp.test(email);
+}
+  
 
-    return values.email.length == 0 || !validateEmail(values.email) || values.subject.length == 0 || values.message.length == 0;
-  }
-
-  const reset = () =>{
-    setValues({ email: "", subject: "", message: "" })
-  }
-
-  const validateEmail = (email) => {
-    const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return regexp.test(email);
-  }
-
-  const classes = useStyles();
-
-  return (
-    <div className="wrap_form">
-
-      <div className={classes.root}>
-        <Paper elevation={3}>
-          <div className="header">Send New Email</div>
-          <form className={classes.root} noValidate autoComplete="off">
-
-            <CssTextField error={errors.email} id="custom-css-standard-input" name="email" label="To:" value={values.email} onChange={handleChange} onBlur={handleBlur}/>
-
-            <CssTextField error={errors.subject} id="custom-css-standard-input" name="subject" label="Subject:" value={values.subject} onChange={handleChange} />
-
-            <TextField style={{borderBottomColor: 'green'}} valid="sadad" error={errors.message} id="custom-css-standard-input" name="message" label="Message:" value={values.message} onChange={handleChange} />
-
-            <div className="loading">
-              <CircularProgress disableShrink style={{display: stage != "sending" ? "none" : "block"}} />
-              <img src="./images/loading.gif" style={{display: stage != "sent" ? "none" : "block"}}/>
-
-            </div>
-
-            <Button variant="contained" color="secondary" disabled={sendButtonStatus()} onClick={()=>{
-              setStage("sending");
-              setTimeout(()=>{
-                setStage("sent");
-                setTimeout(()=>{
-                  setStage("");
-                  reset();
-                },3000)
-              },3000)
-            }}>
-              Send<Grid item xs={8}>
-                <SendIcon />
-              </Grid>
-            </Button>
+const handleLoad = (e) =>{
+ e.preventDefault()
+    
+}
 
 
 
-            <Button variant="contained" color="secondary" className="resetbutton" onClick={reset}>
-              RESET<Grid item xs={8}>
-                <DeleteIcon />
-              </Grid>
-            </Button>
+const handleBlur1 = (e)=>{
 
+    if(e.target.value.length === 0 || !validateEmail(this.state.valueEmail)){
+      currentStyle = demoStyle
+    }
+else{
+ currentStyle = null
+   }
+this.setState({
+  errorEmail:currentStyle,
 
-
-          </form>
-        </Paper>
-      </div>
-
-
-
-    </div>
-  )
+})
 
 }
-export default FormComponent
+
+
+
+const handleBlur2 = (e)=>{
+  if(e.target.value.length === 0){
+    currentStyle = demoStyle
+   }else{
+    currentStyle = null
+   }
+this.setState({
+  errorSubject:currentStyle,
+})
+
+}
+
+
+
+
+const handleBlur3 = (e)=>{
+ if(e.target.value.length === 0){
+  currentStyle = demoStyle
+ }else{
+  currentStyle = null
+ }
+this.setState({
+  errorMessage:currentStyle,
+})
+
+}
+
+
+const resetForm = ()=>{
+  this.setState({
+    valueEmail:"",
+    valueSubject:"",
+    valueMessage:"",
+    errorEmail:null,
+    errorSubject:null,
+    errorMessage:null,
+  })
+}
+
+
+
+
+
+
+
+  return (
+    <form autoComplete="off" onSubmit = {handleLoad}>
+    <input type ="text" label="email"  placeholder="email" name="email" value={this.state.valueEmail} onChange={handleChange1} style={this.state.errorEmail} onBlur={handleBlur1}/> 
+    <input type ="text" label="subject"  placeholder="subject" name="subject" value={this.state.valueSubject} onChange={handleChange2} style={this.state.errorSubject} onBlur={handleBlur2}/> 
+    <input type ="text" label="message" placeholder="message" name="message" value={this.state.valueMessage} onChange={handleChange3} style={this.state.errorMessage} onBlur={handleBlur3}/> 
+  
+    <button type="submit">Submit</button>
+    <button type="reset" onClick={resetForm}>Rest</button>
+  </form>
+  )
+}
+}
